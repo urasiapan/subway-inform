@@ -1,0 +1,4 @@
+﻿  소스.c
+C:\Users\82105\Desktop\하\Project1\Project1\소스.c(45,9): warning C4101: 'j' :참조되지 않은 지역 변수입니다.
+C:\Users\82105\Desktop\하\Project1\Project1\소스.c(104,7): warning C4101: 'check_place' :참조되지 않은 지역 변수입니다.
+  Project1.vcxproj -> C:\Users\82105\Desktop\하\Project1\Debug\Project1.exe
