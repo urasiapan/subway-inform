@@ -1,3 +1,4 @@
+//ì§€í•˜ì²  íƒ‘ìŠ¹ ì „ì—ëŠ” ì§€í•˜ì²  ì •ë³´ë“¤ì„, ì§€í•˜ì²  íƒ‘ìŠ¹ í›„ì—ëŠ” ë‚´ë¦´ ì—­ì— ë§žì¶° ì•ŒëžŒì„ ì œê³µí•˜ëŠ” ê¸°ëŠ¥.
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
@@ -5,95 +6,35 @@
 #include <windows.h>
 
 struct subway {
-	int number; //¸îÈ£¼±
-	int arrival_time; //³»°¡ ÀÖ´Â ¿ª¿¡ µµÂøÇÏ´Âµ¥ °É¸®´Â ½Ã°£(ºÐ)
-	char terminus[20]; //Á¾Âø¿ª
-	double bustle; //ºÕºñ´Â Á¤µµ(%)
+	int number; //ëª‡í˜¸ì„ 
+	int arrival_time; //ë‚´ê°€ ìžˆëŠ” ì—­ì— ë„ì°©í•˜ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„(ë¶„)
+	char terminus[20]; //ì¢…ì°©ì—­
+	double bustle; //ë¶ë¹„ëŠ” ì •ë„(%)
 };
 
-// ³»°¡ ÀÖ´Â ¿ªÀÇ ½Ç½Ã°£ ÀÌ¹ø ¿­Â÷, ´ÙÀ½ ¿­Â÷, ´Ù´ÙÀ½¿­Â÷ ±¸Á¶Ã¼
-struct subway first[4] = { { 1, 15, "Ã»·®¸®", 85.5 }, { 2, 10, "¼º¼ö", 70 }, {3, 15, "µ¿´ëÀÔ±¸", 20 } ,{4,13,"´ç°í°³¿ª",60 } }; //ÀÌ¹ø ¿­Â÷ Á¤º¸
-struct subway next[4] = { { 1, 30, "µ¿¹¦¾Õ", 50 }, { 2,30, "°Ç´ëÀÔ±¸", 90 }, {3, 30, "µ¿´ëÀÔ±¸", 10 }, {4, 20, "±æÀ½¿ª", 50} }; //´ÙÀ½ ¿­Â÷ Á¤º¸
-struct subway next_next[4] = { { 1, 60, "±¤¿î´ë", 25 }, { 2, 45, "¼º¼ö", 60 }, {3, 45, "Àá¿ø", 10 }, {4, 40, "³²ÅÂ·É¿ª", 30} }; //´Ù´ÙÀ½ ¿­Â÷ Á¤º¸
+// ë‚´ê°€ ìžˆëŠ” ì—­ì˜ ì‹¤ì‹œê°„ ì´ë²ˆ ì—´ì°¨, ë‹¤ìŒ ì—´ì°¨, ë‹¤ë‹¤ìŒì—´ì°¨ êµ¬ì¡°ì²´
+struct subway first[4] = { { 1, 15, "ì²­ëŸ‰ë¦¬ì—­", 85.5 }, { 2, 10, "ì„±ìˆ˜ì—­", 70 }, {3, 15, "ë™ëŒ€ìž…êµ¬ì—­", 20 } ,{4,13,"ë‹¹ê³ ê°œì—­",60 } }; //ì´ë²ˆ ì—´ì°¨ ì •ë³´
+struct subway next[4] = { { 1, 30, "ë™ë¬˜ì•žì—­", 50 }, { 2,30, "ê±´ëŒ€ìž…êµ¬ì—­", 90 }, {3, 30, "ë™ëŒ€ìž…êµ¬ì—­", 10 }, {4, 20, "ê¸¸ìŒì—­", 50} }; //ë‹¤ìŒ ì—´ì°¨ ì •ë³´
+struct subway next_next[4] = { { 1, 60, "ê´‘ìš´ëŒ€ì—­", 25 }, { 2, 45, "ì„±ìˆ˜ì—­", 60 }, {3, 45, "ìž ì›ì—­", 10 }, {4, 40, "ë‚¨íƒœë ¹ì—­", 30} }; //ë‹¤ë‹¤ìŒ ì—´ì°¨ ì •ë³´
 
-// //1~4È£¼± ³ë¼±
-char subway_hosun[4][30][15] = { { "¼­¿ï¿ª", "½ÃÃ»¿ª", "Á¾°¢¿ª", "Á¾·Î3°¡¿ª", "Á¾·Î5°¡¿ª", "µ¿´ë¹®¿ª", "µ¿¹¦¾Õ¿ª", "½Å¼³µ¿¿ª", "Á¦±âµ¿¿ª", "Ã»·®¸®¿ª", "¼®°è¿ª", "±¤¿î´ë¿ª","Ã¢µ¿¿ª","µµºÀ»ê¿ª","È¸·æ¿ª","¼Ò¿ä»ê¿ª" },
-	{ "½ÃÃ»¿ª", "À»Áö·ÎÀÔ±¸¿ª", "À»Áö·Î3°¡¿ª", "À»Áö·Î4°¡¿ª", "µ¿´ë¹®¿îµ¿Àå¿ª", "½Å´ç¿ª", "»ó¿Õ½Ê¸®¿ª", "¿Õ½Ê¸®¿ª", "ÇÑ¾ç´ë¿ª", "¶Ò¼¶¿ª", "¼º¼ö¿ª", "°Ç´ëÀÔ±¸¿ª" },
-	{"µ¶¸³¹®¿ª", "°æº¹±Ã¿ª","Á¾·Î3°¡¿ª", "À»Áö·Î3°¡¿ª","Ãæ¹«·Î¿ª", "µ¿´ëÀÔ±¸¿ª" , "¾à¼ö¿ª", "±ÝÈ£¿ª", "¿Á¼ö¿ª", "¾Ð±¸Á¤¿ª", "½Å»ç¿ª", "Àá¿ø¿ª"},
-	{"´ç°í°³¿ª","»ó°è¿ª","³ë¿ø¿ª","Ã¢µ¿¿ª","½Ö¹®¿ª","¼öÀ¯¿ª","¹Ì¾Æ¿ª","¹Ì¾Æ»ï°Å¸®¿ª","±æÀ½¿ª","¼º½Å¿©´ëÀÔ±¸¿ª","ÇÑ¼º´ëÀÔ±¸¿ª","ÇýÈ­¿ª","µ¿´ë¹®¿ª","µ¿´ë¹®¿îµ¿Àå¿ª","Ãæ¹«·Î¿ª","¸íµ¿¿ª","È¸Çö¿ª","¼­¿ï¿ª","¼÷´ëÀÔ±¸¿ª","»ï°¢Áö¿ª","½Å¿ë»ê¿ª","ÀÌÃÌ¿ª","µ¿ÀÛ¿ª","ÃÑ½Å´ëÀÔ±¸¿ª","»ç´ç¿ª","³²ÅÂ·É¿ª"} };
+// //1~4í˜¸ì„  ë…¸ì„ 
+char subway_hosun[4][30][15] = { { "ì„œìš¸ì—­", "ì‹œì²­ì—­", "ì¢…ê°ì—­", "ì¢…ë¡œ3ê°€ì—­", "ì¢…ë¡œ5ê°€ì—­", "ë™ëŒ€ë¬¸ì—­", "ë™ë¬˜ì•žì—­", "ì‹ ì„¤ë™ì—­", "ì œê¸°ë™ì—­", "ì²­ëŸ‰ë¦¬ì—­", "ì„ê³„ì—­", "ê´‘ìš´ëŒ€ì—­","ì°½ë™ì—­","ë„ë´‰ì‚°ì—­","íšŒë£¡ì—­","ì†Œìš”ì‚°ì—­" },
+	{ "ì‹œì²­ì—­", "ì„ì§€ë¡œìž…êµ¬ì—­", "ì„ì§€ë¡œ3ê°€ì—­", "ì„ì§€ë¡œ4ê°€ì—­", "ë™ëŒ€ë¬¸ìš´ë™ìž¥ì—­", "ì‹ ë‹¹ì—­", "ìƒì™•ì‹­ë¦¬ì—­", "ì™•ì‹­ë¦¬ì—­", "í•œì–‘ëŒ€ì—­", "ëšì„¬ì—­", "ì„±ìˆ˜ì—­", "ê±´ëŒ€ìž…êµ¬ì—­" },
+	{"ë…ë¦½ë¬¸ì—­", "ê²½ë³µê¶ì—­","ì¢…ë¡œ3ê°€ì—­", "ì„ì§€ë¡œ3ê°€ì—­","ì¶©ë¬´ë¡œì—­", "ë™ëŒ€ìž…êµ¬ì—­" , "ì•½ìˆ˜ì—­", "ê¸ˆí˜¸ì—­", "ì˜¥ìˆ˜ì—­", "ì••êµ¬ì •ì—­", "ì‹ ì‚¬ì—­", "ìž ì›ì—­"},
+	{"ë‹¹ê³ ê°œì—­","ìƒê³„ì—­","ë…¸ì›ì—­","ì°½ë™ì—­","ìŒë¬¸ì—­","ìˆ˜ìœ ì—­","ë¯¸ì•„ì—­","ë¯¸ì•„ì‚¼ê±°ë¦¬ì—­","ê¸¸ìŒì—­","ì„±ì‹ ì—¬ëŒ€ìž…êµ¬ì—­","í•œì„±ëŒ€ìž…êµ¬ì—­","í˜œí™”ì—­","ë™ëŒ€ë¬¸ì—­","ë™ëŒ€ë¬¸ìš´ë™ìž¥ì—­","ì¶©ë¬´ë¡œì—­","ëª…ë™ì—­","íšŒí˜„ì—­","ì„œìš¸ì—­","ìˆ™ëŒ€ìž…êµ¬ì—­","ì‚¼ê°ì§€ì—­","ì‹ ìš©ì‚°ì—­","ì´ì´Œì—­","ë™ìž‘ì—­","ì´ì‹ ëŒ€ìž…êµ¬ì—­","ì‚¬ë‹¹ì—­","ë‚¨íƒœë ¹ì—­"} };
+
+//1~4í˜¸ì„  ì—­ ì‚¬ì´ì˜ ì‹œê°„ ê°„ê²©
+int time_interval_hosun[4][30] = { { 3, 4, 2, 3, 3, 2,3, 3, 3, 3, 3,2,3,3,3 },
+	{ 3, 3, 2, 3, 3, 3, 2, 3, 3, 2, 3 },
+	{3,3,3,3,2,3,3,2,3,3,4},
+	{3,3,3,3,4,3,3,3,4,3,3,3,3,3,2,3,3,3,3,2,3,4,4,3,2} }; 
 
 
-//1~4È£¼± ¿ª »çÀÌÀÇ ½Ã°£ °£°Ý
-int time_interval_hosun[4][30] = { { 2, 3, 1, 2, 2, 1, 2, 2, 2, 2, 2,1,2,2,2 },
-	{ 2, 2, 1, 2, 2, 2, 1, 2, 2, 1, 2 },
-	{2,2,2,2,1,2,2,1,2,2,3},
-	{2,2,2,2,3,2,2,2,3,2,2,2,2,2,1,2,2,2,2,1,2,4,3,2,1} }; 
+void alarm(int sec);//ì•Œë¦¼ ê¸°ëŠ¥ í•¨ìˆ˜
 
-//¾Ë¸² ±â´É ÇÔ¼ö
-void alarm(int sec)
-{
-	Sleep(sec * 1000 * 60);
-	printf("\a");
-}
+void subway_inform(int use_hosun, char my_place[15]); //ì§€í•˜ì²  ì •ë³´ ì•ˆë‚´ ê¸°ëŠ¥ í•¨ìˆ˜
 
-//ÁöÇÏÃ¶ ¾È³» ¼­ºñ½º ¸ÞÀÎ ±â´É ÇÔ¼ö
-void subway_inform(int use_hosun, char my_place[15]) 
-{
-	int number; //1~6 ¼±ÅÃÁö
-	char want_place[10]; //¸ñÀûÁö
-	int time_to_want = 0; //¸ñÀûÁö±îÁö °É¸®´Â ½Ã°£
-	int i, j;
-
-	do {
-		printf("1. ÀÌ¹ø ¿­Â÷ÀÇ ³»°¡ ÀÖ´Â ¿ª¿¡ µµÂøÇÏ´Âµ¥ °É¸®´Â ½Ã°£\n");
-		printf("2. ÀÌ¹ø ¿­Â÷ÀÇ Á¾Âø¿ª\n");
-		printf("3. ÀÌ¹ø ¿­Â÷ÀÇ ³ªÀÇ ¸ñÀûÁö±îÁö °É¸®´Â ½Ã°£\n");
-		printf("4. ÀÌ¹ø ¿­Â÷ÀÇ ºÕºñ´Â Á¤µµ\n");
-		printf("5. ´ÙÀ½ ¿­Â÷¿Í ´Ù´ÙÀ½ ¿­Â÷ÀÇ Á¤º¸ È®ÀÎÇÏ±â\n");
-		printf("6. Á¾·á\n");
-
-		printf("¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä.\n");
-		scanf("%d", &number);
-
-		if (number == 1)
-			printf("%dºÐ\n", first[use_hosun - 1].arrival_time); 
-		else if (number == 2)
-			printf("%s\n", first[use_hosun - 1].terminus); 
-		else if (number == 3) {
-			printf("³ªÀÇ ¸ñÀûÁö ¿ªÀ» ÀÔ·ÂÇÏ¼¼¿ä.\n");//ÇöÀç ¿ª¿¡¼­ ¸ñÀûÁö±îÁö °¡´Âµ¥ °É¸®´Â ½Ã°£ °è»ê
-			scanf("%s", want_place);
-			int w, m, t; //want_placeÀÎµ¦½º, my_placeÀÎµ¦½º, temporary
-			for (i = 0; i < 30; i++)
-			{
-				if (strcmp(want_place, subway_hosun[use_hosun - 1][i]) == 0) 
-					w = i;
-				if (strcmp(my_place, subway_hosun[use_hosun - 1][i]) == 0) 
-					m = i;
-			}
-
-			if (m > w) //my_place ÀÎµ¦½º°¡ ´õ Å« °æ¿ì µÑÀÌ ¹Ù²Û´Ù.
-				t = m, m = w, w = t;
-
-			for (i = m; i < w; i++)
-				time_to_want += time_interval_hosun[use_hosun - 1][i]; 
-
-			printf("%s¿¡¼­ %s±îÁö %dºÐ °É¸³´Ï´Ù.\n", my_place, want_place, time_to_want);
-
-		}
-		else if (number == 4)
-			printf("%.1f%%\n", first[use_hosun - 1].bustle);
-		else if (number == 5) {
-			printf("´ÙÀ½ ¿­Â÷: %dºÐ ÈÄ µµÂø, Á¾Âø¿ªÀº %s, %.1f%%ºÕºö\n", next[use_hosun - 1].arrival_time, next[use_hosun - 1].terminus, next[use_hosun - 1].bustle); 
-			printf("´Ù´ÙÀ½ ¿­Â÷: %dºÐ ÈÄ µµÂø, Á¾Âø¿ªÀº %s, %.1f%%ºÕºö\n", next_next[use_hosun - 1].arrival_time, next_next[use_hosun - 1].terminus, next_next[use_hosun - 1].bustle);
-		}
-		else if (number == 6)
-			break;
-		else
-			printf("1¿¡¼­ 6±îÁöÀÇ ¼ýÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä.\n");
-	} while (number != 6);
-
-}
-
+char want_place[10]; //ëª©ì ì§€
 
 
 
@@ -101,10 +42,9 @@ int main(void) {
 	int ans;
 	int use_hosun;
 	char my_place[15];
-	char check_place[10];
-	int check = -1;
+	int check = -1; //ì‚¬ìš©ìžê°€ ìž…ë ¥í•œ ì§€í•˜ì² ì—­ì´ ì¡´ìž¬í•˜ëŠ”ì§€ í™•ì¸ìš©
 
-	printf("º»ÀÎÀÌ ÀÖ´Â ÁöÇÏÃ¶ ¿ªÀ» '(   )¿ª' Çü½ÄÀ¸·Î ÀÔ·ÂÇÏ¼¼¿ä\n");
+	printf("ë³¸ì¸ì´ ìžˆëŠ” ì§€í•˜ì²  ì—­ì„ '(   )ì—­' í˜•ì‹ìœ¼ë¡œ ìž…ë ¥í•˜ì„¸ìš”\n");
 	do{
 		scanf("%s", &my_place);
 		for (int i = 0; i < 4; i++)
@@ -116,38 +56,39 @@ int main(void) {
 					}
 				}
 		if (check == -1) {
-			printf("º»ÀÎÀÌ ÀÖ´Â ÁöÇÏÃ¶ ¿ªÀ» '(   )¿ª' Çü½ÄÀ¸·Î ¿Ã¹Ù¸£°Ô ÀÔ·ÂÇÏ¼¼¿ä\n");
+			printf("ë³¸ì¸ì´ ìžˆëŠ” ì§€í•˜ì²  ì—­ì„ '(   )ì—­' í˜•ì‹ìœ¼ë¡œ ì˜¬ë°”ë¥´ê²Œ ìž…ë ¥í•˜ì„¸ìš”\n");
 		}
 	}while (check == -1);
 
-	printf("ÀÌ¿ëÇÒ ÁöÇÏÃ¶ÀÌ ¸î È£¼±ÀÎÁö ¼ýÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä.(1~4Áß ÀÔ·ÂÇÏ¼¼¿ä)\n");
+	printf("ì´ìš©í•  ì§€í•˜ì² ì´ ëª‡ í˜¸ì„ ì¸ì§€ ìˆ«ìžë¥¼ ìž…ë ¥í•˜ì„¸ìš”.(1~4ì¤‘ ìž…ë ¥í•˜ì„¸ìš”)\n");
 	while (1) {
 		scanf("%d", &use_hosun);
 		if (0<use_hosun && use_hosun<5)
 			break;
 		else
-			printf("1~4È£¼± Áß ÇÏ³ªÀÇ ¼ýÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä.\n");
+			printf("1~4í˜¸ì„  ì¤‘ í•˜ë‚˜ì˜ ìˆ«ìžë¥¼ ìž…ë ¥í•˜ì„¸ìš”.\n");
 	}
 
-
+	printf("ì§€í•˜ì² ì„ íƒ‘ìŠ¹ ì˜ˆì •ì´ë©´ 1, ì§€í•˜ì² ì„ íƒ‘ìŠ¹ ì¤‘ì´ë©´ 2ë¥¼ ìž…ë ¥í•´ì£¼ì„¸ìš”.\n");
 	while (1) {
-		printf("ÁöÇÏÃ¶À» Å¾½Â ¿¹Á¤ÀÌ¸é 1, ÁöÇÏÃ¶À» Å¾½Â ÁßÀÌ¸é 2¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
 		scanf("%d", &ans);
 
-		//ÁöÇÏÃ¶ Å¾½Â ¿¹Á¤
+		//ì§€í•˜ì²  íƒ‘ìŠ¹ ì˜ˆì •
 		if (ans == 1) {
 			subway_inform(use_hosun, my_place);
 			break;
 		}
 
-		//ÁöÇÏÃ¶ Å¾½Â Áß. //¸ñÀûÁö¿ªÀÇ Àü¿ª¿¡¼­ ½Ã°£ ¸ÂÃç ¾Ë¸² ±â´É Á¦°ø
+		//ì§€í•˜ì²  íƒ‘ìŠ¹ ì¤‘. //ëª©ì ì§€ì—­ì˜ ì „ì—­ì—ì„œ ì‹œê°„ ë§žì¶° ì•Œë¦¼ ê¸°ëŠ¥ ì œê³µ
 		else if (ans == 2) {
 			int time_to_before_want = 0;
-			char want_place[10];
-			printf("³ªÀÇ ¸ñÀûÁö ¿ªÀ» ÀÔ·ÂÇÏ¼¼¿ä.\n");//ÇöÀç ¿ª°ú ¸ñÀûÁöÀÇ °Å¸®¿¡ µû¸¥ ½Ã°£ °è»ê
+			printf("ë‚˜ì˜ ëª©ì ì§€ ì—­ì„ ìž…ë ¥í•˜ì„¸ìš”.\n");//í˜„ìž¬ ì—­ê³¼ ëª©ì ì§€ì˜ ê±°ë¦¬ì— ë”°ë¥¸ ì‹œê°„ ê³„ì‚°
 			scanf("%s", want_place);
-			int w, m, t; //want_placeÀÎµ¦½º, my_placeÀÎµ¦½º, temporary
-			for (int i = 0; i < 30; i++)
+
+			int size = sizeof(subway_hosun[use_hosun - 1]) / sizeof(subway_hosun[use_hosun - 1][0]);
+
+			int w, m, t; //want_placeì¸ë±ìŠ¤, my_placeì¸ë±ìŠ¤, temporary
+			for (int i = 0; i < size; i++)
 			{
 				if (strcmp(want_place, subway_hosun[use_hosun - 1][i]) == 0) 
 					w = i;
@@ -155,22 +96,95 @@ int main(void) {
 					m = i;
 			}
 
-			if (m > w) //my_place ÀÎµ¦½º°¡ ´õ Å« °æ¿ì µÑÀÌ ¹Ù²Û´Ù.
+			if (m > w) //my_place ì¸ë±ìŠ¤ê°€ ë” í° ê²½ìš° ë‘˜ì´ ë°”ê¾¼ë‹¤.
 				t = m, m = w, w = t;
 
 			for (int i = m; i < w - 1; i++)
 				time_to_before_want += time_interval_hosun[use_hosun - 1][i]; 
-			printf("%dºÐ ÈÄ, %s ÀÇ ¹Ù·Î Àü ¿ª¿¡ µµÂøÇÏ¸é ¾Ë¶÷ÀÌ ¿ï¸³´Ï´Ù.\n", time_to_before_want, want_place);
+			printf("%dë¶„ í›„, ëª©ì ì§€ ì—­ì¸ %sì˜ ë°”ë¡œ ì „ ì—­ì— ë„ì°©í•˜ë©´ ì•ŒëžŒì„ ë“œë¦½ë‹ˆë‹¤.\n", time_to_before_want, want_place);
 			alarm(time_to_before_want);
 
+			//ëª©ì ì§€ ì—­ì˜ ì „ ì—­ ì´ë¦„ ê³„ì‚°
+			if (m>w)
+				printf("%sì˜ ì „ ì—­ì¸ %sì— ë„ì°©í•˜ì˜€ìŠµë‹ˆë‹¤. ë‹¤ìŒ ì—­ì—ì„œ ë‚´ë¦¬ì‹œë©´ë©ë‹ˆë‹¤.\n", want_place, subway_hosun[use_hosun - 1][w + 1]);
+			else
+				printf("%sì˜ ì „ ì—­ì¸ %sì— ë„ì°©í•˜ì˜€ìŠµë‹ˆë‹¤. ë‹¤ìŒ ì—­ì—ì„œ ë‚´ë¦¬ì‹œë©´ë©ë‹ˆë‹¤.\n", want_place, subway_hosun[use_hosun - 1][w - 1]);
+			
 			break;
 		}
 
-		//1,2¿Ü ¼ýÀÚ Àß¸ø ÀÔ·Â
+		//1,2ì™¸ ìˆ«ìž ìž˜ëª» ìž…ë ¥
 		else
-			printf("ÁöÇÏÃ¶À» Å¾½Â ¿¹Á¤ÀÌ¸é 1, ÁöÇÏÃ¶À» Å¾½Â ÁßÀÌ¸é 2¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
+			printf("íƒ‘ìŠ¹ ì˜ˆì •ì´ë©´ 1, íƒ‘ìŠ¹ ì¤‘ì´ë©´ 2, ìˆ«ìžë¥¼ ìž…ë ¥í•´ì£¼ì„¸ìš”.\n");
 	}
 
 
 	return 0;
+}
+
+
+
+//ì•Œë¦¼ ê¸°ëŠ¥ í•¨ìˆ˜
+void alarm(int sec)
+{
+	Sleep(sec * 1000 * 60); 
+	printf("\a");
+}
+
+
+
+//ì§€í•˜ì²  ì •ë³´ ì•ˆë‚´ ê¸°ëŠ¥ í•¨ìˆ˜
+void subway_inform(int use_hosun, char my_place[15])
+{
+	int number; //1~6 ì„ íƒì§€
+	int i;
+
+	do {
+		int time_to_want = 0; //ëª©ì ì§€ê¹Œì§€ ê±¸ë¦¬ëŠ” ì‹œê°„
+		printf("1. ì´ë²ˆ ì—´ì°¨ì˜ ë‚´ê°€ ìžˆëŠ” ì—­ì— ë„ì°©í•˜ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„\n");
+		printf("2. ì´ë²ˆ ì—´ì°¨ì˜ ì¢…ì°©ì—­\n");
+		printf("3. ì´ë²ˆ ì—´ì°¨ì˜ ë‚˜ì˜ ëª©ì ì§€ê¹Œì§€ ê±¸ë¦¬ëŠ” ì‹œê°„\n");
+		printf("4. ì´ë²ˆ ì—´ì°¨ì˜ ë¶ë¹„ëŠ” ì •ë„\n");
+		printf("5. ë‹¤ìŒ ì—´ì°¨ì™€ ë‹¤ë‹¤ìŒ ì—´ì°¨ì˜ ì •ë³´ í™•ì¸í•˜ê¸°\n");
+		printf("6. ì¢…ë£Œ\n");
+
+		printf("ë²ˆí˜¸ë¥¼ ìž…ë ¥í•˜ì„¸ìš”.\n");
+		scanf("%d", &number);
+
+		if (number == 1)
+			printf("ì´ë²ˆ ì—´ì°¨ê°€ %sì— %dë¶„ í›„ ë„ì°©í•©ë‹ˆë‹¤.\n", my_place ,first[use_hosun - 1].arrival_time);
+		else if (number == 2)
+			printf("ì´ë²ˆ ì—´ì°¨ì˜ ì¢…ì°©ì—­ì€ %sìž…ë‹ˆë‹¤.\n", first[use_hosun - 1].terminus);
+		else if (number == 3) {
+			printf("ë‚˜ì˜ ëª©ì ì§€ ì—­ì„ ìž…ë ¥í•˜ì„¸ìš”.\n");//í˜„ìž¬ ì—­ì—ì„œ ëª©ì ì§€ê¹Œì§€ ê°€ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„ ê³„ì‚°
+			scanf("%s", want_place);
+			int w, m, t; //want_placeì¸ë±ìŠ¤, my_placeì¸ë±ìŠ¤, temporary
+			for (i = 0; i < 30; i++)
+			{
+				if (strcmp(want_place, subway_hosun[use_hosun - 1][i]) == 0)
+					w = i;
+				if (strcmp(my_place, subway_hosun[use_hosun - 1][i]) == 0)
+					m = i;
+			}
+
+			if (m > w) //my_place ì¸ë±ìŠ¤ê°€ ë” í° ê²½ìš° ë‘˜ì´ ë°”ê¾¼ë‹¤.
+				t = m, m = w, w = t;
+
+			for (i = m; i < w; i++)
+				time_to_want += time_interval_hosun[use_hosun - 1][i];
+
+			printf("%sì—ì„œ %sê¹Œì§€ %dë¶„ ê±¸ë¦½ë‹ˆë‹¤.\n", my_place, want_place, time_to_want);
+		}
+		else if (number == 4)
+			printf("ì´ë²ˆ ì—´ì°¨ëŠ” %.1f%%ë§Œí¼ ë¶ë¹”ë‹ˆë‹¤.\n", first[use_hosun - 1].bustle);
+		else if (number == 5) {
+			printf("ë‹¤ìŒ ì—´ì°¨: %dë¶„ í›„ ë„ì°©, ì¢…ì°©ì—­ì€ %s, %.1f%%ë¶ë¹”\n", next[use_hosun - 1].arrival_time, next[use_hosun - 1].terminus, next[use_hosun - 1].bustle);
+			printf("ë‹¤ë‹¤ìŒ ì—´ì°¨: %dë¶„ í›„ ë„ì°©, ì¢…ì°©ì—­ì€ %s, %.1f%%ë¶ë¹”\n", next_next[use_hosun - 1].arrival_time, next_next[use_hosun - 1].terminus, next_next[use_hosun - 1].bustle);
+		}
+		else if (number == 6)
+			break;
+		else
+			printf("1ì—ì„œ 6ê¹Œì§€ì˜ ìˆ«ìžë¥¼ ìž…ë ¥í•˜ì„¸ìš”.\n");
+	} while (number != 6);
+
 }
